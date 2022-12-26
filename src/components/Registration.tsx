@@ -29,7 +29,7 @@ function Registration(props: any) {
 	useEffect(() => {
 		fetch('https://new-backend.unistory.app/api/data')
 			.then(response => response.json())
-			.then(res => (items[0].id === undefined) ? setItems(res.items) : null)
+			.then(res => (items.length === 0) ? setItems(res.items) : null)
 			.catch(err => setError(err))
   	}, []);	
 
