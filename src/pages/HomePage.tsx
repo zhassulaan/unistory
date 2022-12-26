@@ -21,7 +21,7 @@ function HomePage(props: any) {
 			<Header account={ props.account } connect={ props.connect } />
 			
 			<Hero />
-			<Registration account={ props.account } connect={ props.connect } user={ props.user } items={ props.items } />
+			{/* <Registration account={ props.account } connect={ props.connect } user={ props.user } items={ props.items } /> */}
 		</div>
 	);
 };
