@@ -3,21 +3,42 @@ import Button from "./Button";
 import styled from "styled-components";
 import close from "../assets/close.svg";
 
+// to get list of users from local-storage
+const getLocalItems = () => {
+	let list = localStorage.getItem('lists');
+
+	if (list) {
+		return JSON.parse(localStorage.getItem('lists') || '{}');
+	} else {
+		return [];
+	}
+}
+
 function Registration(props: any) {
 	// data from our form (input tags)
 	const [name, setName] = useState<string>('');
 	const [email, setEmail] = useState<string>('');
 	// set of datas in one array
-	const [data, setData] = useState<string[]>(['', '', '']);
-	const [items, setItems] = useState<any>(props.items);
+	const [data, setData] = useState<any>({id: 0, username: '', email: '', address: ''});
+	const [items, setItems] = useState<any>(getLocalItems());
 	const [user, setUser] = useState<any>(props.user);
+	// Error message
+	const [error, setError] = useState({})
+
+	// get data from backend if we don't have it
+	useEffect(() => {
+		fetch('https://new-backend.unistory.app/api/data')
+			.then(response => response.json())
+			.then(res => (items[0].id === undefined) ? setItems(res.items) : null)
+			.catch(err => setError(err))
+  	}, []);	
 
 	// this function checks if our list of users already have current user
-	function exists(data: string[]): any {
+	function exists(data: any): any {
 		let exist = false;
 
-		{ items.map((item: string[]) => {
-			if (item[0] === data[0] && item[1] === data[1] && item[2] === data[2]) 
+		{ items.map((item: any) => {
+			if (item.username === data.username && item.email === data.email && item.address === data.address) 
 				exist = true;
 		}) }
 		return exist;
@@ -27,7 +48,10 @@ function Registration(props: any) {
 	function submitItem(e: any)  {
 		e.preventDefault();
 		if (name !== '' && email !== '') {
-			const newData: string[] = [name, email, props.account];
+			const newData: any = {id: items.length + 1, username: name, email: email, address: props.account};
+			console.log(data);
+			console.log(newData);
+			
 			setData(newData);
 		}
 	}
@@ -36,7 +60,7 @@ function Registration(props: any) {
 	function addItem(e: any)  {
 		e.preventDefault();
 		if (!exists(data)) {
-			const newArray = [data, ...items];
+			const newArray = [...items, data];
 			setItems(newArray);
 		}
 	}
@@ -45,7 +69,7 @@ function Registration(props: any) {
 	function deleteItem(e: any) {
 		e.preventDefault();
 		const updatesItems = items.filter((item: any) => {
-			return (item[0] !== data[0] || item[1] !== data[1] || item[2] !== data[2]);
+			return (item.username !== data.username || item.email !== data.email || item.address !== data.address);
 		});
 		setItems(updatesItems);
 	}
@@ -54,7 +78,7 @@ function Registration(props: any) {
 	function saveUser(e: any) {
 		e.preventDefault();
 		document.location.href="/user";
-		setUser(items[e.target.id]);
+		setUser(items[e.target.id - 1]);
 	}
 
 	useEffect(() =>{
@@ -76,8 +100,8 @@ function Registration(props: any) {
 				</p>
 
 				<FormTitle>Name</FormTitle>
-				{ (data[0] !== '') ?
-					<AccountInfo>{ data[0] }</AccountInfo>
+				{ (data.username !== '') ?
+					<AccountInfo>{ data.username }</AccountInfo>
 						:
 					<input
 						type="text"
@@ -92,8 +116,8 @@ function Registration(props: any) {
 				}
 
 				<FormTitle>Email</FormTitle>
-				{ (data[0] !== '') ?
-					<AccountInfo>{ data[1] }</AccountInfo>
+				{ (data.email !== '') ?
+					<AccountInfo>{ data.email }</AccountInfo>
 						:	
 					<input
 						type="text"
@@ -108,7 +132,7 @@ function Registration(props: any) {
 				}
 				
 				{ props.account ?
-					(data[0] !== '' && data[1] !== '') ?
+					(data.username !== '' && data.email !== '') ?
 						(!exists(data)) ?
 							// If user filled in form but didn't add information into the table
 							<Button text={ "List me to the table" } action={ addItem } />							
@@ -127,7 +151,7 @@ function Registration(props: any) {
 			</FormBox>
 			
 			{/* Table zone */}
-			{ data[0] !== '' ?
+			{ data.username !== '' ?
 				<TableBox>
 					<h1 className="title">Participation listing (enable only for participants)</h1>
 
@@ -140,22 +164,23 @@ function Registration(props: any) {
 
 					{/* Table */}
 					<ul className={ exists(data) ? "table acc" : "table " }>
-						{ items?.map((item: string[], index: any) => (
-							(item[0] === data[0] && item[1] === data[1] && item[2] === data[2]) ?
-							<li className="row current">
+						
+						{ items?.slice(0).reverse().map((item: any) => (
+							(item.username === data.username && item.email === data.email && item.address === data.address) ?
+								<li className="row current">
 									{/* Current account */}
-									<p className="text text1">{ item[0] }</p>
-									<p className="text text2">{ item[1] }</p>
-									<p className="text text3">{ item[2] }</p>
+									<p className="text text1">{ item.username }</p>
+									<p className="text text2">{ item.email }</p>
+									<p className="text text3">{ item.address }</p>
 									<img src={close} alt="close button" className="close btn" onClick={ deleteItem } />
 								</li>
 									:
-								<a href="/user" id={ index } onClick={ saveUser }>
-									<li className="row" id={ index }>
+								<a href="/user" id={ item.id } onClick={ saveUser }>
+									<li className="row" id={ item.id }>
 										{/* Other accounts */}
-										<p className="text text1" id={ index }>{ item[0] }</p>
-										<p className="text text2" id={ index }>{ item[1] }</p>
-										<p className="text text3" id={ index }>{ item[2] }</p>
+										<p className="text text1" id={ item.id }>{ item.username }</p>
+										<p className="text text2" id={ item.id }>{ item.email }</p>
+										<p className="text text3" id={ item.id }>{ item.address }</p>
 									</li>
 								</a>
 							))
