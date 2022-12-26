@@ -18,17 +18,17 @@ function UserPage(props: any) {
 					<ul>
 						<li className="info">
 							<h2>Name</h2>
-							<h4 className="account-info">{ props.user[0] }</h4>
+							<h4 className="account-info">{ props.user.username }</h4>
 						</li>
 
 						<li className="info">
 							<h2>Email</h2>
-							<h4 className="account-info">{ props.user[1] }</h4>
+							<h4 className="account-info">{ props.user.email }</h4>
 						</li>
 
 						<li className="info">
 							<h2>Wallet</h2>
-							<h4 className="account-info">{ props.user[2] }</h4>
+							<h4 className="account-info">{ props.user.address }</h4>
 						</li>
 					</ul>
 
