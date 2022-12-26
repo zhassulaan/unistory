@@ -49,13 +49,12 @@ function App() {
 
   return (
     <div className="App">
-		{/* <Router>
+		<Router>
 			<Routes>
 				<Route path="/unistory" element={ <Home account={ defaultAccount } connect={ connectWalletHandler } user={ user } /> } />
 				<Route path="/user" element={ <User account={ defaultAccount } connect={ connectWalletHandler } user={ user } /> } />
 			</Routes>
-      </Router> */}
-		<h1>ih</h1>
+      </Router>
     </div>
   );
 }
