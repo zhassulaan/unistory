@@ -31,7 +31,7 @@ function Registration(props: any) {
 			.then(response => response.json())
 			.then(res => (items.length === 0) ? setItems(res.items) : null)
 			.catch(err => setError(err))
-  	}, []);	
+  	}, [items.length]);	
 
 	// this function checks if our list of users already have current user
 	function exists(data: any): any {
@@ -49,9 +49,6 @@ function Registration(props: any) {
 		e.preventDefault();
 		if (name !== '' && email !== '') {
 			const newData: any = {id: items.length + 1, username: name, email: email, address: props.account};
-			console.log(data);
-			console.log(newData);
-			
 			setData(newData);
 		}
 	}

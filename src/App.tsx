@@ -51,7 +51,7 @@ function App() {
     <div className="App">
 		<Router>
 			<Routes>
-				<Route path="/unistory" element={ <Home account={ defaultAccount } connect={ connectWalletHandler } user={ user } /> } />
+				<Route path="/" element={ <Home account={ defaultAccount } connect={ connectWalletHandler } user={ user } /> } />
 				<Route path="/user" element={ <User account={ defaultAccount } connect={ connectWalletHandler } user={ user } /> } />
 			</Routes>
       </Router>
