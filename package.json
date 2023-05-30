@@ -48,7 +48,6 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "https://zhassulaan.github.io/unistory/",
   "devDependencies": {
     "@types/styled-components": "^5.1.26"
   }
